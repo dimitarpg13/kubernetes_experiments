@@ -1,0 +1,13 @@
+#!/bin/bash
+ISTIO_TRACING_PORT_FORWARDING_LOG_FILE=istio_tracing_port_forwarding.log
+ISTIO_TRACING_PID_FILE=istio_tracing.pid
+ISTIO_TRACING_EXTERNAL_PORT=16685
+ISTIO_TRACING_INSTANCE_POD=$(microk8s kubectl -n istio-system get pods | grep '^istio-tracing' | cut -f1 -d ' ')
+ISTIO_TRACING_SERVICE_PORT=$(microk8s kubectl get services -n istio-system | grep 'jaeger-query' | sed -n 's/[^ ]* *[^ ]* *[^ ]* *[^ ]* *\([^ ]*\)\/[^ ]*.*/\1/p')
+microk8s kubectl -n istio-system port-forward --address 0.0.0.0 $ISTIO_TRACING_INSTANCE_POD $ISTIO_TRACING_EXTERNAL_PORT:$ISTIO_TRACING_SERVICE_PORT > $ISTIO_TRACING_PORT_FORWARDING_LOG_FILE 2>&1 &
+export ISTIO_TRACING_PORT_FORWARDING_PROCESS_ID=$!
+export ISTIO_TRACING_PORT_FORWARDING_JOB_ID=$(jobs -l | grep "$ISTIO_TRACING_PORT_FORWARDING_PROCESS_ID Running" | cut -f1 -d ' ' | sed -n 's/\[\([0-9]*\)\]+/\1/p')
+echo "ISTIO_TRACING_PORT_FORWARDING_PROCESS_ID=$ISTIO_TRACING_PORT_FORWARDING_PROCESS_ID" | tee $ISTIO_TRACING_PID_FILE
+echo "ISTIO_TRACING_PORT_FORWARDING_JOB_ID=$ISTIO_TRACING_PORT_FORWARDING_JOB_ID" | tee -a $ISTIO_TRACING_PID_FILE
+echo "ISTIO_TRACING_INSTANCE_POD=$ISTIO_TRACING_INSTANCE_POD" | tee -a $ISTIO_TRACING_PID_FILE
+echo "ISTIO_TRACING_SERVICE_PORT=$ISTIO_TRACING_SERVICE_PORT" | tee -a $ISTIO_TRACING_PID_FILE
