@@ -18,7 +18,7 @@ spec:
       name: http
       protocol: HTTP
     hosts:
-    - $MY_INGRESS_GATEWAY_HOST
+    - "*"
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -26,7 +26,7 @@ metadata:
   name: bookinfo
 spec:
   hosts:
-  - $MY_INGRESS_GATEWAY_HOST
+  - "*"
   gateways:
   - bookinfo-gateway.$NAMESPACE.svc.cluster.local
   http:
