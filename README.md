@@ -1,2 +1,2 @@
 # kubernetes_experiments
-Exploring various configuration and setup options with microk8s add-ons
+Exploring various configuration and setup options with microk8s add-ons - Work In Progress
