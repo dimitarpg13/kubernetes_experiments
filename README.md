@@ -1,4 +1,4 @@
-# kubernetes_experiments (Work In Progress)
+# Experiments with Kubernetes (Work In Progress)
 
 Exploring various configuration and setup options with microk8s add-ons
 
